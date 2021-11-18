@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "meo-cli": "index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,5 +15,12 @@
   },
   "keywords": [],
   "author": "yaoyao.yy",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^8.3.0",
+    "download-git-repo": "^3.0.2",
+    "handlebars": "^4.7.7",
+    "inquirer": "^8.2.0",
+    "ora": "^6.0.1"
+  }
 }
