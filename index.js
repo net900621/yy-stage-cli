@@ -15,8 +15,8 @@ inquirer
   .prompt([
     {
       name: 'name',
-      message: '请输入项目名称',
-      default: '后台系统',
+      message: '请输入项目名称（英文）',
+      default: 'back-stage-system',
     },
     {
       name: 'description',
@@ -123,14 +123,14 @@ inquirer
           }
 
           // 写login.ts
-          const basePath = path.join(downloadPath, 'src/config/login.ts')
+          const loginPath = path.join(downloadPath, 'src/config/login.ts')
           // 判断是否有login.ts, 要把输入的数据回填到模板中
-          if (fs.existsSync(basePath)) {
-            const content = fs.readFileSync(basePath).toString()
+          if (fs.existsSync(loginPath)) {
+            const content = fs.readFileSync(loginPath).toString()
             // handlebars 模板处理引擎
             const template = handlebars.compile(content)
             const result = template({ aid, pid, name })
-            fs.writeFileSync(basePath, result)
+            fs.writeFileSync(loginPath, result)
           } else {
             console.log('failed! no login.ts')
           }

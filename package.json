@@ -1,6 +1,6 @@
 {
-  "name": "back-stage-cli",
-  "version": "1.0.0",
+  "name": "@byted-aurora/back-stage-cli",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
   "bin": {
