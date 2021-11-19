@@ -3,13 +3,32 @@
 const process = require('process')
 const { program } = require('commander')
 const download = require('download-git-repo')
-const { exec } = require('child_process')
+const { execSync, exec } = require('child_process')
 const path = require('path')
 const inquirer = require('inquirer')
 const fs = require('fs')
 const handlebars = require('handlebars')
+const ora = require('ora')
+const chalk = require('chalk')
+const shell = require('shelljs')
 
-program.version('1.0.0')
+const continueToInstall = {
+  type: 'confirm',
+  name: 'next',
+  message: '是否安装依赖项目',
+  default: true,
+}
+const installTool = {
+  name: 'tool',
+  type: 'list',
+  message: '请选择打包工具',
+  choices: ['npm', 'yarn'],
+  default: 'npm',
+}
+
+let spinner = null
+
+program.version('1.0.4')
 
 inquirer
   .prompt([
@@ -61,8 +80,8 @@ inquirer
   ])
   .then(({ name, description, author, dev, online, title, desc, aid, pid }) => {
     const downloadPath = path.join(process.cwd(), name)
-    // const spinner = ora('正在下载模板, 请稍后...')
-    // spinner.start()
+    spinner = ora('正在下载模板, 请稍后...')
+    spinner.start()
 
     download(
       'direct:git@code.byted.org:aurora/fe_back-stage-temp.git#dev',
@@ -135,11 +154,41 @@ inquirer
             console.log('failed! no login.ts')
           }
 
+          spinner.succeed('模板拉取完成')
           // 删除依赖锁
-          exec('rm ./tmp/package-lock.json ./tmp/yarn.lock')
+          execSync(`rm ./${name}/package-lock.json ./${name}/yarn.lock`)
+          installDependency(() => {
+            console.log(chalk.green('success! 项目初始化成功！'))
+            console.log(
+              chalk.greenBright('开启项目') +
+                '\n' +
+                chalk.greenBright('cd ' + name) +
+                '\n' +
+                chalk.greenBright('start to dvelop~~~!')
+            )
+          }, name)
+        } else {
+          spinner.fail()
         }
       }
     )
   })
+
+const installDependency = async (cbk, name) => {
+  const { next } = await inquirer.prompt(continueToInstall)
+  if (next) {
+    const { tool } = await inquirer.prompt(installTool)
+    shell.cd(name)
+    spinner = ora('正在安装依赖, 请稍后...')
+    exec(`${tool} install`, (err) => {
+      if (err) {
+        spinner.fail()
+      } else {
+        spinner.succeed()
+        cbk()
+      }
+    })
+  }
+}
 
 program.parse(process.argv)
