@@ -182,9 +182,10 @@ const installDependency = async (cbk, name) => {
     spinner = ora('正在安装依赖, 请稍后...')
     exec(`${tool} install`, (err) => {
       if (err) {
+        console.log(err)
         spinner.fail()
       } else {
-        spinner.succeed()
+        spinner.succeed('依赖安装完成')
         cbk()
       }
     })
