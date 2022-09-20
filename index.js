@@ -50,12 +50,12 @@ inquirer
     {
       name: 'dev',
       message: '请输入boe接口域名',
-      default: 'https://onlinehospital.bytedance.net',
+      default: 'https://apfst-mall-bgms-boe-api.bytedance.net',
     },
     {
       name: 'online',
       message: '请输入线上接口域名',
-      default: 'https://onlinehospital.lvsongguo.com',
+      default: 'https://shopapi.xiaohe.cn',
     },
     {
       name: 'title',
@@ -77,102 +77,143 @@ inquirer
       message: '请输入product_id',
       default: '418',
     },
+    {
+      name: 'cdn',
+      message: '请输入cdn前缀',
+      default: '/aurora/fe_qn-im',
+    },
   ])
-  .then(({ name, description, author, dev, online, title, desc, aid, pid }) => {
-    const downloadPath = path.join(process.cwd(), name)
-    spinner = ora('正在下载模板, 请稍后...')
-    spinner.start()
+  .then(
+    ({
+      name,
+      description,
+      author,
+      dev,
+      online,
+      title,
+      desc,
+      aid,
+      pid,
+      cdn,
+    }) => {
+      const downloadPath = path.join(process.cwd(), name)
+      spinner = ora('正在下载模板, 请稍后...')
+      spinner.start()
 
-    download(
-      'direct:git@code.byted.org:aurora/fe_back-stage-temp.git#dev',
-      downloadPath,
-      { clone: true },
-      (err) => {
-        if (!err) {
-          // 写package.json
-          const packagePath = path.join(downloadPath, 'package.json')
-          // 判断是否有package.json, 要把输入的数据回填到模板中
-          if (fs.existsSync(packagePath)) {
-            const content = fs.readFileSync(packagePath).toString()
-            // handlebars 模板处理引擎
-            const template = handlebars.compile(content)
-            const result = template({ name, description, author })
-            fs.writeFileSync(packagePath, result)
+      download(
+        'direct:git@code.byted.org:aurora/fe_back-stage-temp.git#dev',
+        downloadPath,
+        { clone: true },
+        (err) => {
+          if (!err) {
+            // 写package.json
+            const packagePath = path.join(downloadPath, 'package.json')
+            // 判断是否有package.json, 要把输入的数据回填到模板中
+            if (fs.existsSync(packagePath)) {
+              const content = fs.readFileSync(packagePath).toString()
+              // handlebars 模板处理引擎
+              const template = handlebars.compile(content)
+              const result = template({ name, description, author, cdn })
+              fs.writeFileSync(packagePath, result)
+            } else {
+              console.log('failed! no package.json')
+            }
+
+            // 写jupiter.config.js
+            const jupiterPath = path.join(downloadPath, 'jupiter.config.js')
+            // 写jupiter.config.js, 要把输入的数据回填到模板中
+            if (fs.existsSync(jupiterPath)) {
+              const content = fs.readFileSync(jupiterPath).toString()
+              // handlebars 模板处理引擎
+              const template = handlebars.compile(content)
+              const result = template({ title: name, description, dev })
+              fs.writeFileSync(jupiterPath, result)
+            } else {
+              console.log('failed! no jupiter.config.js')
+            }
+
+            // 写config.ts
+            const configPath = path.join(downloadPath, 'src/api/config.ts')
+            // 判断是否有config.ts, 要把输入的数据回填到模板中
+            if (fs.existsSync(configPath)) {
+              const content = fs.readFileSync(configPath).toString()
+              // handlebars 模板处理引擎
+              const template = handlebars.compile(content)
+              const result = template({ online })
+              fs.writeFileSync(configPath, result)
+            } else {
+              console.log('failed! no config.ts')
+            }
+
+            // 写base.ts
+            const basePath = path.join(downloadPath, 'src/config/base.ts')
+            // 判断是否有base.ts, 要把输入的数据回填到模板中
+            if (fs.existsSync(basePath)) {
+              const content = fs.readFileSync(basePath).toString()
+              // handlebars 模板处理引擎
+              const template = handlebars.compile(content)
+              const result = template({ online, title, desc })
+              fs.writeFileSync(basePath, result)
+            } else {
+              console.log('failed! no base.ts')
+            }
+
+            // 写login.ts
+            const loginPath = path.join(downloadPath, 'src/config/login.ts')
+            // 判断是否有login.ts, 要把输入的数据回填到模板中
+            if (fs.existsSync(loginPath)) {
+              const content = fs.readFileSync(loginPath).toString()
+              // handlebars 模板处理引擎
+              const template = handlebars.compile(content)
+              const result = template({ aid, pid, name })
+              fs.writeFileSync(loginPath, result)
+            } else {
+              console.log('failed! no login.ts')
+            }
+
+            // 写环境变量
+            const envBoePath = path.join(downloadPath, 'env/.env.development')
+            const envOnlinePath = path.join(downloadPath, 'env/.env.product')
+            // 判断是否有login.ts, 要把输入的数据回填到模板中
+            if (fs.existsSync(envBoePath)) {
+              const content = fs.readFileSync(envBoePath).toString()
+              // handlebars 模板处理引擎
+              const template = handlebars.compile(content)
+              const result = template({ dev })
+              fs.writeFileSync(envBoePath, result)
+            } else {
+              console.log('failed! no login.ts')
+            }
+            if (fs.existsSync(envOnlinePath)) {
+              const content = fs.readFileSync(envOnlinePath).toString()
+              // handlebars 模板处理引擎
+              const template = handlebars.compile(content)
+              const result = template({ online })
+              fs.writeFileSync(envOnlinePath, result)
+            } else {
+              console.log('failed! no login.ts')
+            }
+
+            spinner.succeed('模板拉取完成')
+            // 删除依赖锁
+            execSync(`rm ./${name}/package-lock.json ./${name}/yarn.lock`)
+            installDependency(() => {
+              console.log(chalk.green('success! 项目初始化成功！'))
+              console.log(
+                chalk.greenBright('开启项目') +
+                  '\n' +
+                  chalk.greenBright('cd ' + name) +
+                  '\n' +
+                  chalk.greenBright('start to dvelop~~~!')
+              )
+            }, name)
           } else {
-            console.log('failed! no package.json')
+            spinner.fail()
           }
-
-          // 写jupiter.config.js
-          const jupiterPath = path.join(downloadPath, 'jupiter.config.js')
-          // 写jupiter.config.js, 要把输入的数据回填到模板中
-          if (fs.existsSync(jupiterPath)) {
-            const content = fs.readFileSync(jupiterPath).toString()
-            // handlebars 模板处理引擎
-            const template = handlebars.compile(content)
-            const result = template({ title: name, description, dev })
-            fs.writeFileSync(jupiterPath, result)
-          } else {
-            console.log('failed! no jupiter.config.js')
-          }
-
-          // 写config.ts
-          const configPath = path.join(downloadPath, 'src/api/config.ts')
-          // 判断是否有config.ts, 要把输入的数据回填到模板中
-          if (fs.existsSync(configPath)) {
-            const content = fs.readFileSync(configPath).toString()
-            // handlebars 模板处理引擎
-            const template = handlebars.compile(content)
-            const result = template({ online })
-            fs.writeFileSync(configPath, result)
-          } else {
-            console.log('failed! no config.ts')
-          }
-
-          // 写base.ts
-          const basePath = path.join(downloadPath, 'src/config/base.ts')
-          // 判断是否有base.ts, 要把输入的数据回填到模板中
-          if (fs.existsSync(basePath)) {
-            const content = fs.readFileSync(basePath).toString()
-            // handlebars 模板处理引擎
-            const template = handlebars.compile(content)
-            const result = template({ online, title, desc })
-            fs.writeFileSync(basePath, result)
-          } else {
-            console.log('failed! no base.ts')
-          }
-
-          // 写login.ts
-          const loginPath = path.join(downloadPath, 'src/config/login.ts')
-          // 判断是否有login.ts, 要把输入的数据回填到模板中
-          if (fs.existsSync(loginPath)) {
-            const content = fs.readFileSync(loginPath).toString()
-            // handlebars 模板处理引擎
-            const template = handlebars.compile(content)
-            const result = template({ aid, pid, name })
-            fs.writeFileSync(loginPath, result)
-          } else {
-            console.log('failed! no login.ts')
-          }
-
-          spinner.succeed('模板拉取完成')
-          // 删除依赖锁
-          execSync(`rm ./${name}/package-lock.json ./${name}/yarn.lock`)
-          installDependency(() => {
-            console.log(chalk.green('success! 项目初始化成功！'))
-            console.log(
-              chalk.greenBright('开启项目') +
-                '\n' +
-                chalk.greenBright('cd ' + name) +
-                '\n' +
-                chalk.greenBright('start to dvelop~~~!')
-            )
-          }, name)
-        } else {
-          spinner.fail()
         }
-      }
-    )
-  })
+      )
+    }
+  )
 
 const installDependency = async (cbk, name) => {
   const { next } = await inquirer.prompt(continueToInstall)
