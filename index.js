@@ -196,7 +196,7 @@ inquirer
 
             spinner.succeed('模板拉取完成')
             // 删除依赖锁
-            execSync(`rm ./${name}/package-lock.json ./${name}/yarn.lock`)
+            execSync(`rm ./${name}/yarn.lock`)
             installDependency(() => {
               console.log(chalk.green('success! 项目初始化成功！'))
               console.log(
