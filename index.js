@@ -50,12 +50,12 @@ inquirer
     {
       name: 'dev',
       message: '请输入boe接口域名',
-      default: 'https://apfst-mall-bgms-boe-api.bytedance.net',
+      default: 'https://baidu.com',
     },
     {
       name: 'online',
       message: '请输入线上接口域名',
-      default: 'https://shopapi.xiaohe.cn',
+      default: 'https://baidu.com',
     },
     {
       name: 'title',
@@ -101,7 +101,7 @@ inquirer
       spinner.start()
 
       download(
-        'direct:git@code.byted.org:aurora/fe_back-stage-temp.git#dev',
+        'direct:git@github.com:net900621/back-stages-system.git',
         downloadPath,
         { clone: true },
         (err) => {
@@ -119,17 +119,17 @@ inquirer
               console.log('failed! no package.json')
             }
 
-            // 写jupiter.config.js
-            const jupiterPath = path.join(downloadPath, 'jupiter.config.js')
+            // modern.config.ts
+            const modernPath = path.join(downloadPath, 'modern.config.ts')
             // 写jupiter.config.js, 要把输入的数据回填到模板中
-            if (fs.existsSync(jupiterPath)) {
-              const content = fs.readFileSync(jupiterPath).toString()
+            if (fs.existsSync(modernPath)) {
+              const content = fs.readFileSync(modernPath).toString()
               // handlebars 模板处理引擎
               const template = handlebars.compile(content)
               const result = template({ title: name, description, dev })
-              fs.writeFileSync(jupiterPath, result)
+              fs.writeFileSync(modernPath, result)
             } else {
-              console.log('failed! no jupiter.config.js')
+              console.log('failed! no modern.config.ts')
             }
 
             // 写config.ts

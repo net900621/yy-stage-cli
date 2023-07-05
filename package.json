@@ -1,6 +1,6 @@
 {
-  "name": "@byted-aurora/back-stage-cli",
-  "version": "1.0.7",
+  "name": "yy-stage-cli",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "bin": {
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@code.byted.org:aurora/fe_back-stage-cli.git"
+    "url": "git@github.com:net900621/yy-stage-cli.git"
   },
   "keywords": [],
   "author": "yaoyao.yy",
