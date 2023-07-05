@@ -12,9 +12,9 @@
 ## Get Started
 
 ```
-npm install @byted-aurora/back-stage-cli -g
+npm install yy-stage-cli -g
 ```
 
 ```
-meo-cli
+yy-cli
 ```
