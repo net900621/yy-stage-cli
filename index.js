@@ -49,7 +49,7 @@ inquirer
     },
     {
       name: 'dev',
-      message: '请输入boe接口域名',
+      message: '请输入offline接口域名',
       default: 'https://baidu.com',
     },
     {
@@ -172,15 +172,15 @@ inquirer
             // }
 
             // // 写环境变量
-            // const envBoePath = path.join(downloadPath, 'env/.env.development')
+            // const envofflinePath = path.join(downloadPath, 'env/.env.development')
             // const envOnlinePath = path.join(downloadPath, 'env/.env.product')
             // // 判断是否有login.ts, 要把输入的数据回填到模板中
-            // if (fs.existsSync(envBoePath)) {
-            //   const content = fs.readFileSync(envBoePath).toString()
+            // if (fs.existsSync(envofflinePath)) {
+            //   const content = fs.readFileSync(envofflinePath).toString()
             //   // handlebars 模板处理引擎
             //   const template = handlebars.compile(content)
             //   const result = template({ dev })
-            //   fs.writeFileSync(envBoePath, result)
+            //   fs.writeFileSync(envofflinePath, result)
             // } else {
             //   console.log('failed! no login.ts')
             // }
