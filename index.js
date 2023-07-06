@@ -101,9 +101,9 @@ inquirer
       spinner.start()
 
       download(
-        'direct:git@github.com:net900621/back-stages-system.git',
+        'github:net900621/back-stages-system#master',
         downloadPath,
-        { clone: true },
+        // { clone: true },
         (err) => {
           if (!err) {
             // 写package.json
@@ -158,41 +158,41 @@ inquirer
               console.log('failed! no base.ts')
             }
 
-            // 写login.ts
-            const loginPath = path.join(downloadPath, 'src/config/login.ts')
-            // 判断是否有login.ts, 要把输入的数据回填到模板中
-            if (fs.existsSync(loginPath)) {
-              const content = fs.readFileSync(loginPath).toString()
-              // handlebars 模板处理引擎
-              const template = handlebars.compile(content)
-              const result = template({ aid, pid, name })
-              fs.writeFileSync(loginPath, result)
-            } else {
-              console.log('failed! no login.ts')
-            }
+            // // 写login.ts
+            // const loginPath = path.join(downloadPath, 'src/config/login.ts')
+            // // 判断是否有login.ts, 要把输入的数据回填到模板中
+            // if (fs.existsSync(loginPath)) {
+            //   const content = fs.readFileSync(loginPath).toString()
+            //   // handlebars 模板处理引擎
+            //   const template = handlebars.compile(content)
+            //   const result = template({ aid, pid, name })
+            //   fs.writeFileSync(loginPath, result)
+            // } else {
+            //   console.log('failed! no login.ts')
+            // }
 
-            // 写环境变量
-            const envBoePath = path.join(downloadPath, 'env/.env.development')
-            const envOnlinePath = path.join(downloadPath, 'env/.env.product')
-            // 判断是否有login.ts, 要把输入的数据回填到模板中
-            if (fs.existsSync(envBoePath)) {
-              const content = fs.readFileSync(envBoePath).toString()
-              // handlebars 模板处理引擎
-              const template = handlebars.compile(content)
-              const result = template({ dev })
-              fs.writeFileSync(envBoePath, result)
-            } else {
-              console.log('failed! no login.ts')
-            }
-            if (fs.existsSync(envOnlinePath)) {
-              const content = fs.readFileSync(envOnlinePath).toString()
-              // handlebars 模板处理引擎
-              const template = handlebars.compile(content)
-              const result = template({ online })
-              fs.writeFileSync(envOnlinePath, result)
-            } else {
-              console.log('failed! no login.ts')
-            }
+            // // 写环境变量
+            // const envBoePath = path.join(downloadPath, 'env/.env.development')
+            // const envOnlinePath = path.join(downloadPath, 'env/.env.product')
+            // // 判断是否有login.ts, 要把输入的数据回填到模板中
+            // if (fs.existsSync(envBoePath)) {
+            //   const content = fs.readFileSync(envBoePath).toString()
+            //   // handlebars 模板处理引擎
+            //   const template = handlebars.compile(content)
+            //   const result = template({ dev })
+            //   fs.writeFileSync(envBoePath, result)
+            // } else {
+            //   console.log('failed! no login.ts')
+            // }
+            // if (fs.existsSync(envOnlinePath)) {
+            //   const content = fs.readFileSync(envOnlinePath).toString()
+            //   // handlebars 模板处理引擎
+            //   const template = handlebars.compile(content)
+            //   const result = template({ online })
+            //   fs.writeFileSync(envOnlinePath, result)
+            // } else {
+            //   console.log('failed! no login.ts')
+            // }
 
             spinner.succeed('模板拉取完成')
             // 删除依赖锁
@@ -208,6 +208,7 @@ inquirer
               )
             }, name)
           } else {
+            console.log(err)
             spinner.fail()
           }
         }
